@@ -16,3 +16,11 @@ list_of_files = [
     "static",
     "templates/chat.html"
 ]
+
+for filepath in list_of_files:
+    filepath = Path(filepath)
+    filedir, filename = os.path.split(filepath)
+
+    if filedir !="":
+        os.makedirs(filedir,exist_ok=True)
+        logging.info(f"creating directory; {filedir} for the file {filename}")
