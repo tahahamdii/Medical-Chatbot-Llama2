@@ -30,4 +30,4 @@ for filepath in list_of_files:
             pass
             logging.info(f"creating empty file: {filepath}")
     else:
-    logging.info(f"{filename} is already created")
+        logging.info(f"{filename} is already created")
