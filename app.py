@@ -37,13 +37,14 @@ llm=CTransformers(model="model/llama-2-7b-chat.ggmlv3.q4_0.bin",
                           'temperature':0.8
                           })
 
-qa=RetrievalQA.from_chain_type(
-    llm=llm,
-    chain_type="stuff",
-    retriever=vector_store.as_retriever(search_kwargs={'k': 2}),
-    return_source_documents=True,
-    chain_type_kwargs=chain_type_kwargs)
+qa= vector_store.as_retriever(
+    search_type="similarity_score_threshold",
+    search_kwargs={"k": 1, "score_threshold": 0.5},
+)
 
 @app.route("/")
 def index():
     return render_template('chat.html')
+
+if __name__ == '__main__':
+    app.run(debug= True)
