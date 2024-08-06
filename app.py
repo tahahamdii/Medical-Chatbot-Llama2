@@ -41,6 +41,13 @@ qa= vector_store.as_retriever(
     search_type="similarity_score_threshold",
     search_kwargs={"k": 1, "score_threshold": 0.5},
 )
+chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type="stuff",
+    retriever=qa,
+    return_source_documents=True,
+    chain_type_kwargs={"prompt":PROMPT})
+
 
 @app.route("/")
 def index():
@@ -51,7 +58,7 @@ def chat():
     msg = request.form["msg"]
     input = msg
     print(input)
-    result=qa({"query": input})
+    result=chain({"query": input})
     print("response : ", result["result"])
     return str(result["result"])
 
