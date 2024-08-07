@@ -7,6 +7,7 @@ from langchain.chains import RetrievalQA
 from dotenv import load_dotenv
 from src.prompot import *
 from pinecone import Pinecone
+import pinecone
 import os
 
 import os
@@ -22,10 +23,12 @@ embeddings = download_hugging_face_embeddings()
 pc = Pinecone(api_key='c7eca03a-c885-49a2-bbd9-b4bc52fa3157')
 pc.list_indexes()
 index_name="medicalchatbot"
-index = pc.Index(index_name)
+
+#init index
+index = pc.Index(host=)
 
 #Loading the vecotr with the new update langchain pinecone a retour
-vector_store = LangchainPinecone(index=index)
+vector_store = LangchainPinecone.from_existing_index(index_name=index_name, embedding=embeddings)
 
 PROMPT=PromptTemplate(template=prompt_template, input_variables=["context", "question"])
 chain_type_kwargs={"prompt": PROMPT}
