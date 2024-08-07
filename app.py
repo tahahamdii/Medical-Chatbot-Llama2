@@ -6,7 +6,8 @@ from langchain.llms import CTransformers
 from langchain.chains import RetrievalQA
 from dotenv import load_dotenv
 from src.prompot import *
-from pinecone import Pinecone
+from pinecone.grpc import PineconeGRPC as Pinecone
+from langchain_pinecone import PineconeVectorStore
 import pinecone
 import os
 
@@ -28,7 +29,7 @@ index_name="medicalchatbot"
 index = pc.Index(index_name)
 
 #Loading the vecotr with the new update langchain pinecone a retour
-vector_store = LangchainPinecone(index_name, embeddings,'text')
+vector_store = PineconeVectorStore(index_name, embeddings,'text')
 
 PROMPT=PromptTemplate(template=prompt_template, input_variables=["context", "question"])
 chain_type_kwargs={"prompt": PROMPT}
@@ -38,19 +39,15 @@ llm = CTransformers(model="model/llama-2-7b-chat.ggmlv3.q4_0.bin",
                     model_type="llama",
                     config={'max_new_tokens': 512, 'temperature': 0.8})
 
-# Set up the retriever
-qa = vector_store.as_retriever(
-    search_type="similarity_score_threshold",
-    search_kwargs={"k": 1, "score_threshold": 0.5},
-)
+
 
 # Set up the RetrievalQA chain
 chain = RetrievalQA.from_chain_type(
     llm=llm,
     chain_type="stuff",
-    retriever=qa,
+    retriever=vector_store.as_retriever(search_kwargs={'k' : 2}),
     return_source_documents=True,
-    chain_type_kwargs={"prompt": PROMPT}
+    chain_type_kwargs=chain_type_kwargs
 )
 
 @app.route("/")

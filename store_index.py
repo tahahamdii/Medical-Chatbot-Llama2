@@ -1,3 +1,5 @@
+from langchain_pinecone import PineconeVectorStore
+
 from src.helper import load_pfd,text_split,download_hugging_face_embeddings
 from langchain.vectorstores import Pinecone as LangchainPinecone
 from pinecone import Pinecone
@@ -28,5 +30,9 @@ print(index.describe_index_stats())
 #Creating embeddings for Each text chunks and storing
 
 #docsearch = LangchainPinecone.from_texts([t.page_content for t in text_chunks], embeddings, index_name=index_name)
-
+#Creating Embeddings for Each of The Text Chunks & storing
+texts = ["Tonight, I call on the Senate to: Pass the Freedom to Vote Act.", "ne of the most serious constitutional responsibilities a President has is nominating someone to serve on the United States Supreme Court.", "One of our nation’s top legal minds, who will continue Justice Breyer’s legacy of excellence."]
+docsearch = PineconeVectorStore.from_texts(texts, embedding = embeddings, index_name=index_name)
+# docsearch = Pinecone.from_texts(texts, embedding = embeddings, index_name=index_name)
+docsearch.add_texts([t.page_content for t in text_chunks])
 embedded_texts = embeddings.embed_documents([t.page_content for t in text_chunks])
