@@ -286,3 +286,44 @@ plt.xticks(x_pos, bars)
 # Show graph
 plt.show()
 
+### 4.2 Data augmentation
+
+### Adding the data augmentation to the image data generator
+
+
+from keras_preprocessing.image import ImageDataGenerator
+
+datagen = ImageDataGenerator(rescale=1./255., validation_split=0.1)
+
+train_generator = datagen.flow_from_dataframe(train,
+                                              directory='./',
+                                              x_col='image_path',
+                                              y_col='mask',
+                                              subset='training',
+                                              class_mode='categorical',
+                                              batch_size=16,
+                                              shuffle=True,
+                                              target_size=(256,256)
+                                             )
+valid_generator = datagen.flow_from_dataframe(train,
+                                              directory='./',
+                                              x_col='image_path',
+                                              y_col='mask',
+                                              subset='validation',
+                                              class_mode='categorical',
+                                              batch_size=16,
+                                              shuffle=True,
+                                              target_size=(256,256)
+                                             )
+test_datagen = ImageDataGenerator(rescale=1./255.)
+test_generator = test_datagen.flow_from_dataframe(test,
+                                                  directory='./',
+                                                  x_col='image_path',
+                                                  y_col='mask',
+                                                  class_mode='categorical',
+                                                  batch_size=16,
+                                                  shuffle=False,
+                                                  target_size=(256,256)
+                                                 )
+
+
