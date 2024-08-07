@@ -488,3 +488,25 @@ def datachanges(pic, mask):
     mask[mask <= 0.5] = 0
     pic = pic / 255
     return (pic, mask)
+
+smooth=100
+
+def dice_coef(y_true, y_pred):
+    y_truek=K.flatten(y_true)
+    y_predk=K.flatten(y_pred)
+    ss=K.sum(y_truek* y_predk)
+    return((2* ss + smooth) / (K.sum(y_truek) + K.sum(y_predk) + smooth))
+
+def dice_coef_loss(y_true, y_pred):
+    return -dice_coef(y_true, y_pred)
+
+def jac_distance(y_true, y_pred):
+    y_truek=K.flatten(y_true)
+    y_predk=K.flatten(y_pred)
+    return - iou(y_true, y_pred)
+
+def iou(y_true, y_pred):
+    common = K.sum(y_true * y_pred)
+    sumval = K.sum(y_true + y_pred)
+    jacval = (common + smooth) / (sumval - common + smooth)
+    return jacval
