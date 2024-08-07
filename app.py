@@ -28,7 +28,7 @@ index_name="medicalchatbot"
 index = pc.Index(index_name)
 
 #Loading the vecotr with the new update langchain pinecone a retour
-vector_store = LangchainPinecone.from_existing_index(index_name=index_name, embedding=embeddings,text_key='text')
+vector_store = LangchainPinecone(index_name, embeddings,'text')
 
 PROMPT=PromptTemplate(template=prompt_template, input_variables=["context", "question"])
 chain_type_kwargs={"prompt": PROMPT}

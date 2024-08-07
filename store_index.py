@@ -29,3 +29,4 @@ print(index.describe_index_stats())
 
 #docsearch = LangchainPinecone.from_texts([t.page_content for t in text_chunks], embeddings, index_name=index_name)
 
+embedded_texts = embeddings.embed_documents([t.page_content for t in text_chunks])
