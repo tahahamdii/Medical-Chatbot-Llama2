@@ -19,15 +19,13 @@ extracted_data = load_pfd("data/")
 text_chunks = text_split(extracted_data)
 embeddings = download_hugging_face_embeddings()
 
-
 #Initializing the Pinecone
 pc = Pinecone(api_key='c7eca03a-c885-49a2-bbd9-b4bc52fa3157')
 
 index_name="medicalchatbot"
 index = pc.Index(index_name)
-print(index)
-
+print(index.describe_index_stats())
 #Creating embeddings for Each text chunks and storing
 
-docsearch = LangchainPinecone.from_texts([t.page_content for t in text_chunks], embeddings, index_name=index_name)
+#docsearch = LangchainPinecone.from_texts([t.page_content for t in text_chunks], embeddings, index_name=index_name)
 
