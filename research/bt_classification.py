@@ -392,3 +392,26 @@ h_cnn = cnn_model_withBatch.fit(train_generator,
                             validation_steps= valid_generator.n // valid_generator.batch_size,
                             callbacks=[checkpointer, earlystopping])
 
+# saving model achitecture in json file
+model_json = cnn_model_withBatch.to_json()
+with open("cnn-model.json", "w") as json_file:
+    json_file.write(model_json)
+
+h_cnn.history.keys()
+
+plt.figure(figsize=(12,5))
+plt.subplot(1,2,1)
+plt.plot(h_cnn.history['loss']);
+plt.plot(h_cnn.history['val_loss']);
+plt.title("CNN Classification Model LOSS");
+plt.ylabel("loss");
+plt.xlabel("Epochs");
+plt.legend(['train', 'val']);
+
+plt.subplot(1,2,2)
+plt.plot(h_cnn.history['accuracy']);
+plt.plot(h_cnn.history['val_accuracy']);
+plt.title("CNN Classification Model Accuracy");
+plt.ylabel("Accuracy");
+plt.xlabel("Epochs");
+plt.legend(['train', 'val']);
