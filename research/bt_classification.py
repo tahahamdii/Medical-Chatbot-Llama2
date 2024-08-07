@@ -182,3 +182,68 @@ for mask in brain_df['mask']:
     if (count == 12):
         break
 fig.tight_layout()
+
+
+# 3. CREATING TEST/TRAIN/VALIDATION SET"""
+
+brain_df_train = brain_df.drop(columns=['patient_id'])
+# Convert the data in mask column to string format, to use categorical mode in flow_from_dataframe
+brain_df_train['mask'] = brain_df_train['mask'].apply(lambda x: str(x))
+brain_df_train.info()
+
+train, test = train_test_split(brain_df_train,test_size = 0.15)
+print(train.values.shape)
+print(test.values.shape)
+
+train.head()
+### 3.1 Seeing how many tumors are in the train and test set, respectively"""
+
+# using plotly to create interactive plots
+
+
+fig = go.Figure([go.Bar(x=train['mask'].value_counts().index,
+                        y=train['mask'].value_counts(),
+                        width=[.4, .4],
+                       )
+                ])
+fig.update_traces(marker_color=['darkolivegreen', 'firebrick'], opacity = 0.7
+                 )
+
+fig.update_layout(title_text="Tumor Count Train Set",
+                  width=700,
+                  height=550,
+                  yaxis=dict(
+                             title_text="Count",
+                             tickmode="array",
+                             titlefont=dict(size=20)
+                           )
+                 )
+
+fig.update_yaxes(range = list([0,3000]))
+fig.update_xaxes(tick0 = 0, dtick = 1)
+
+fig.show()
+
+
+fig3 = go.Figure([go.Bar(x=test['mask'].value_counts().index,
+                        y=test['mask'].value_counts(),
+                        width=[.4, .4]
+                       )
+                ])
+fig3.update_traces(marker_color=['darkolivegreen', 'firebrick'], opacity = 0.7
+                 )
+fig3.update_layout(title_text="Tumor Count Test Set",
+                  width=700,
+                  height=550,
+                  yaxis=dict(
+                             title_text="Count",
+                             tickmode="array",
+                             titlefont=dict(size=20)
+                           )
+                 )
+
+fig3.update_yaxes(range = list([0,3000]))
+fig3.update_xaxes(tick0 = 0, dtick = 1)
+
+fig3.show()
+
