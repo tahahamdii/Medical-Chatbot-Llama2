@@ -181,3 +181,4 @@ for mask in brain_df['mask']:
     i += 1
     if (count == 12):
         break
+fig.tight_layout()
