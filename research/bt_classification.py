@@ -415,3 +415,28 @@ plt.title("CNN Classification Model Accuracy");
 plt.ylabel("Accuracy");
 plt.xlabel("Epochs");
 plt.legend(['train', 'val']);
+
+### 4.3 Classification Model CNN  Evaluation
+
+### Test accuracy:
+
+
+_, acc = cnn_model_withBatch.evaluate(test_generator)
+print("Test accuracy of CNN model : {} %".format(acc*100))
+
+prediction = cnn_model_withBatch.predict(test_generator)
+
+pred = np.argmax(prediction, axis=1)
+#pred = np.asarray(pred).astype('str')
+original = np.asarray(test['mask']).astype('int')
+
+accuracy = accuracy_score(original, pred)
+print("Accuracy of Test Data through CNN is: ",accuracy)
+
+cm = confusion_matrix(original, pred)
+
+report = classification_report(original, pred, labels = [0,1])
+print(report)
+print("Confusion Matrix of CNN model")
+plt.figure(figsize = (5,5))
+sns.heatmap(cm, annot=True);
