@@ -1,13 +1,17 @@
-from langchain_pinecone import PineconeVectorStore
 
 from src.helper import load_pfd,text_split,download_hugging_face_embeddings
-from langchain.vectorstores import Pinecone as LangchainPinecone
-from pinecone import Pinecone
-
+from flask import Flask, render_template, jsonify, request
+from src.helper import download_hugging_face_embeddings
+from langchain_pinecone import PineconeVectorStore
+# from langchain.vectorstores import Pinecone
 import pinecone
+from pinecone import Pinecone
+from langchain.prompts import PromptTemplate
+from langchain.llms import CTransformers
+from langchain.chains import RetrievalQA
 from dotenv import load_dotenv
+from src.prompot import *
 import os
-from sentence_transformers import SentenceTransformer
 
 
 
@@ -23,9 +27,10 @@ embeddings = download_hugging_face_embeddings()
 
 #Initializing the Pinecone
 pc = Pinecone(api_key='c7eca03a-c885-49a2-bbd9-b4bc52fa3157')
-
 index_name="medicalchatbot"
+
 index = pc.Index(index_name)
+
 print(index.describe_index_stats())
 #Creating embeddings for Each text chunks and storing
 
