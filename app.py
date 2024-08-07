@@ -5,7 +5,7 @@ from langchain_pinecone import PineconeVectorStore
 import pinecone
 from pinecone import Pinecone
 from langchain.prompts import PromptTemplate
-from langchain.llms import CTransformers
+from langchain_community.llms import CTransformers
 from langchain.chains import RetrievalQA
 from dotenv import load_dotenv
 from src.prompot import *
@@ -25,7 +25,6 @@ embeddings = download_hugging_face_embeddings()
 pc = Pinecone(api_key='c7eca03a-c885-49a2-bbd9-b4bc52fa3157')
 pc.list_indexes()
 index_name="medicalchatbot"
-
 #init index
 index = pc.Index(index_name)
 
@@ -43,12 +42,11 @@ llm=CTransformers(model="model/llama-2-7b-chat.ggmlv3.q4_0.bin",
                           'temperature':0.8})
 
 
-qa=RetrievalQA.from_chain_type(
+qa = RetrievalQA.from_chain_type(
     llm=llm,
     chain_type="stuff",
     retriever=docsearch.as_retriever(search_kwargs={'k': 2}),
-    return_source_documents=True,
-    chain_type_kwargs=chain_type_kwargs)
+    )
 
 
 
@@ -70,4 +68,4 @@ def chat():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port= 8080, debug= True)
+    app.run(debug= True)
