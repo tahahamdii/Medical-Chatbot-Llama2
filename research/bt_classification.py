@@ -598,3 +598,27 @@ def unet(input_size=(256, 256, 3)):
 
 modelunet = unet()
 modelunet.summary()
+
+### Setting the hyperparameters"""
+
+EPOCHS = 50
+BATCH_SIZE = 32
+im_height = 256
+im_width = 256
+
+### Data Augmentation
+
+
+train_generator_args = dict(width_shift_range=0.05,
+                            height_shift_range=0.05,
+                            zoom_range=0.05,
+                            horizontal_flip=True,
+                            fill_mode='nearest')
+
+train_gen = train_generator(train, BATCH_SIZE,
+                            train_generator_args,
+                            target_size=(im_height, im_width))
+
+test_gener = train_generator(test, BATCH_SIZE,
+                             dict(),
+                             target_size=(im_height, im_width))
