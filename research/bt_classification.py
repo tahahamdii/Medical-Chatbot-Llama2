@@ -247,3 +247,42 @@ fig3.update_xaxes(tick0 = 0, dtick = 1)
 
 fig3.show()
 
+# 4. CLASSIFICATION MODEL TO DETECT EXISTENCE OF TUMOR
+
+### 4.1 Batch size
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Table
+fig, ax = plt.subplots(1, 1)
+data = [[0.883, 0.801, 0.783]]
+column_labels = ['Batchsize 16', 'Batchsize 32', 'Batchsize 64']
+row_label = ['Accuracy']
+ax.axis('tight')
+ax.axis('off')
+ax.table(cellText=data, colLabels=column_labels, rowLabels=row_label, loc="center")
+
+plt.show()
+
+# Barplot
+# Make a random dataset:
+height = [0.883, 0.801, 0.783]
+bars = ('16', '32', '64')
+x_pos = np.arange(len(bars))
+
+# Create bars and choose color
+plt.bar(x_pos, height, color=['darkblue', 'blue', 'cyan'])
+
+# Add title and axis names
+plt.title('Accuracy per batchsize')
+plt.xlabel('Batchsize')
+plt.ylabel('Accuracy')
+
+# Create names on the x axis
+plt.xticks(x_pos, bars)
+
+# Show graph
+plt.show()
+
