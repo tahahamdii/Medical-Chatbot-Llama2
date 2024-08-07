@@ -326,4 +326,69 @@ test_generator = test_datagen.flow_from_dataframe(test,
                                                   target_size=(256,256)
                                                  )
 
+# **1. BUILDING A CNN CLASSIFICATION MODEL**"""
+
+from keras.models import Sequential
+input_shape = (256,256,3)
+
+cnn_model_withBatch = Sequential()
+cnn_model_withBatch.add(Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=input_shape))
+cnn_model_withBatch.add(BatchNormalization())
+
+cnn_model_withBatch.add(Conv2D(32, kernel_size=(3, 3), activation='relu'))
+cnn_model_withBatch.add(BatchNormalization())
+cnn_model_withBatch.add(MaxPooling2D(pool_size=(2, 2)))
+cnn_model_withBatch.add(Dropout(0.25))
+
+cnn_model_withBatch.add(Conv2D(64, kernel_size=(3, 3), activation='relu'))
+cnn_model_withBatch.add(BatchNormalization())
+cnn_model_withBatch.add(Dropout(0.25))
+
+cnn_model_withBatch.add(Conv2D(128, kernel_size=(3, 3), activation='relu'))
+cnn_model_withBatch.add(BatchNormalization())
+cnn_model_withBatch.add(MaxPooling2D(pool_size=(2, 2)))
+cnn_model_withBatch.add(Dropout(0.25))
+
+cnn_model_withBatch.add(Flatten())
+
+cnn_model_withBatch.add(Dense(512, activation='relu'))
+cnn_model_withBatch.add(BatchNormalization())
+cnn_model_withBatch.add(Dropout(0.5))
+
+cnn_model_withBatch.add(Dense(128, activation='relu'))
+cnn_model_withBatch.add(BatchNormalization())
+cnn_model_withBatch.add(Dropout(0.5))
+
+cnn_model_withBatch.add(Dense(2, activation='softmax'))
+
+cnn_model_withBatch.compile(loss = 'categorical_crossentropy',
+                            optimizer='adam',
+                            metrics= ["accuracy"]
+                             )
+cnn_model_withBatch.summary()
+
+earlystopping = EarlyStopping(monitor='val_loss',
+                              mode='min',
+                              verbose=1,
+                              patience=15
+                             )
+checkpointer = ModelCheckpoint(filepath="cnn-weights.hdf5",
+                               verbose=1,
+                               save_best_only=True
+                              )
+reduce_lr = ReduceLROnPlateau(monitor='val_loss',
+                              mode='min',
+                              verbose=1,
+                              patience=10,
+                              min_delta=0.0001,
+                              factor=0.2
+                             )
+callbacks = [checkpointer, earlystopping, reduce_lr]
+
+h_cnn = cnn_model_withBatch.fit(train_generator,
+                            steps_per_epoch= train_generator.n // train_generator.batch_size,
+                            epochs = 50,
+                            validation_data= valid_generator,
+                            validation_steps= valid_generator.n // valid_generator.batch_size,
+                            callbacks=[checkpointer, earlystopping])
 
