@@ -105,3 +105,79 @@ def pos_neg_diagnosis(mask_path):
 
 brain_df['mask'] = brain_df['mask_path'].apply(lambda x: pos_neg_diagnosis(x))
 brain_df
+
+# 2. DATA VISUALISATION"""
+
+# How many non-tumors (0) and tumors (1) are in the data
+brain_df['mask'].value_counts()
+
+# Graphic Visualisation of the above counts as bar plots
+# using plotly to create interactive plots
+
+fig = go.Figure([go.Bar(x=brain_df['mask'].value_counts().index,
+                        y=brain_df['mask'].value_counts(),
+                        width=[.4, .4]
+                        )
+                 ])
+fig.update_traces(marker_color='rgb(158,202,225)', marker_line_color='rgb(8,48,107)',
+                  marker_line_width=4, opacity=0.4
+                  )
+fig.update_layout(title_text="Mask Count Plot",
+                  width=700,
+                  height=550,
+                  yaxis=dict(
+                      title_text="Count",
+                      tickmode="array",
+                      titlefont=dict(size=20)
+                  )
+                  )
+fig.update_yaxes(automargin=True)
+fig.show()
+
+# How the image of a tumor looks like and how is the same Brain MRI scan is present for the image.
+for i in range(len(brain_df)):
+    if cv2.imread(brain_df.mask_path[i]).max() > 0:
+        break
+
+plt.figure(figsize=(8, 8))
+plt.subplot(1, 2, 1)
+plt.imshow(cv2.imread(brain_df.mask_path[i]));
+plt.title('Tumor Location')
+
+plt.subplot(1, 2, 2)
+plt.imshow(cv2.imread(brain_df.image_path[i]));
+
+# Basic visualizations: Visualize the images (MRI and Mask) in the dataset separately
+
+fig, axs = plt.subplots(6, 2, figsize=(16, 26))
+count = 0
+for x in range(6):
+    i = random.randint(0, len(brain_df))  # select a random index
+    axs[count][0].title.set_text("Brain MRI")  # set title
+    axs[count][0].imshow(cv2.imread(brain_df.image_path[i]))  # show MRI
+    axs[count][1].title.set_text("Mask - " + str(brain_df['mask'][i]))  # plot title on the mask (0 or 1)
+    axs[count][1].imshow(cv2.imread(brain_df.mask_path[i]))  # Show corresponding mask
+    count += 1
+
+fig.tight_layout()
+
+count = 0
+i = 0
+fig, axs = plt.subplots(12, 3, figsize=(20, 50))
+for mask in brain_df['mask']:
+    if (mask == 1):
+        img = io.imread(brain_df.image_path[i])
+        axs[count][0].title.set_text("Brain MRI")
+        axs[count][0].imshow(img)
+
+        mask = io.imread(brain_df.mask_path[i])
+        axs[count][1].title.set_text("Mask")
+        axs[count][1].imshow(mask, cmap='gray')
+
+        img[mask == 255] = (255, 0, 0)  # change pixel color at the position of mask
+        axs[count][2].title.set_text("MRI with Mask")
+        axs[count][2].imshow(img)
+        count += 1
+    i += 1
+    if (count == 12):
+        break
