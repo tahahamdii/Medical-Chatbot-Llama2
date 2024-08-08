@@ -9,6 +9,9 @@ from langchain_community.llms import CTransformers
 from langchain.chains import RetrievalQA
 from dotenv import load_dotenv
 from src.prompot import *
+from pinecone_text.sparse import BM25Encoder
+
+
 import os
 
 
@@ -46,7 +49,8 @@ qa = RetrievalQA.from_chain_type(
     llm=llm,
     chain_type="stuff",
     retriever=docsearch.as_retriever(search_kwargs={'k': 2}),
-    )
+    return_source_documents=True,
+    chain_type_kwargs=chain_type_kwargs)
 
 
 
@@ -61,10 +65,9 @@ def chat():
     msg = request.form["msg"]
     input = msg
     print(input)
-    result=qa({"query": input})
+    result=qa.invoke({"query": input})
     print("Response : ", result["result"])
     return str(result["result"])
-
 
 
 if __name__ == '__main__':
